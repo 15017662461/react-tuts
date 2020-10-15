@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 
-import { adminRouter } from './routes/index';
+import { adminRoutes } from './routes/index';
 
 import { Route, Switch, Redirect } from 'react-router-dom';
 
+import { Frame } from './components'
+
 class App extends Component {
   render() {
+    const menus = adminRoutes.filter(route => route.isNav === true)
     return (
-      <div className="App">
+      <Frame menus={menus}>
         <Switch>
           {
-            adminRouter.map(route => {
+            adminRoutes.map(route => {
               return <Route
                 exact={route.exact}
                 path={route.pathname}
@@ -20,10 +23,10 @@ class App extends Component {
                 }} />
             })
           }
-          <Redirect to={adminRouter[0].pathname} from="/admin" exact/>
+          <Redirect to={adminRoutes[0].pathname} from="/admin" exact />
           <Redirect to="/404" />
         </Switch>
-      </div>
+      </Frame>
 
     );
   }

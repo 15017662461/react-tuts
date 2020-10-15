@@ -1,0 +1,17 @@
+.qf-header {
+  padding: 0 16px !important;
+  background-color: #fff !important;
+  border-bottom: 1px solid #dedede;
+}
+.qf-header .qf-logo {
+  height: 48px;
+}
+.qf-header .qf-logo img {
+  max-height: 100%;
+}
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: #dbf4ff !important;
+}
+.ant-menu-inline .ant-menu-item-selected::after {
+  background-color: #dbf4ff !important;
+}

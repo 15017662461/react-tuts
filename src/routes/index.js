@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Dashboard,
   Login,
@@ -7,29 +8,41 @@ import {
   ArticleEdit
 } from './../views'
 
-export const mainRouter =  [{
-  pathname:'/login',
-  component:Login
-},{
-  pathname:'/404',
-  component:NotFound
+import {DashboardOutlined ,UnorderedListOutlined, SettingOutlined } from '@ant-design/icons';
+
+export const mainRoutes = [{
+  pathname: '/login',
+  component: Login
+}, {
+  pathname: '/404',
+  component: NotFound
 }]
 
-export const adminRouter = [
+export const adminRoutes = [
   {
-    pathname:'/admin/dashboard',
-    component:Dashboard
-  },{
-    pathname:'/admin/settings',
-    component:Settings
+    pathname: '/admin/dashboard',
+    component: Dashboard,
+    title: '仪表盘',
+    isNav: true,
+    icon:<DashboardOutlined />
   },
   {
-    pathname:'/admin/article',
-    component:ArticleList,
-    exact:true
+    pathname: '/admin/article',
+    component: ArticleList,
+    exact: true,
+    title: '文章管理',
+    isNav: true,
+    icon:<UnorderedListOutlined />
   },
   {
-    pathname:'/admin/article/edit/:id',
-    component:ArticleEdit
+    pathname: '/admin/article/edit/:id',
+    component: ArticleEdit
+  }, 
+  {
+    pathname: '/admin/settings',
+    component: Settings,
+    title: '设置',
+    isNav: true,
+    icon:<SettingOutlined />,
   }
 ]
