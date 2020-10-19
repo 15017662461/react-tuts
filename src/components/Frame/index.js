@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu} from 'antd';
 import {withRouter} from 'react-router-dom';
 // eslint-disable-next-line
 
 import logo from './logo.png'
 import './frame.less'
 // eslint-disable-next-line
-const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 
@@ -26,7 +25,7 @@ class Frame extends Component {
           </div>
         </Header>
         <Layout>
-          <Sider width={200} className="site-layout-background">
+          <Sider width={250} className="site-layout-background">
             <Menu
               mode="inline"
               defaultSelectedKeys={this.props.location.pathname}
@@ -40,7 +39,7 @@ class Frame extends Component {
                     <Menu.Item
                       icon={item.icon ? item.icon  : null}
                       key={item.pathname}
-
+                      style={{height:'60px',lineHeight:'60px'}}
                     >
                       {item.title}
                     </Menu.Item>)
@@ -49,7 +48,7 @@ class Frame extends Component {
 
             </Menu>
           </Sider>
-          <Layout style={{ padding: '0 5px 5px',height:'500px' }}>
+          <Layout style={{ padding: '0 5px 5px',height:'auto' }}>
             <Content
               className="site-layout-background"
               style={{

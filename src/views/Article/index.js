@@ -21,7 +21,9 @@ class ArticleList extends Component {
       dataSource: [],
       columns: [],
       total: 0,
-      isLoading:false
+      isLoading: false,
+      offset: 0,
+      limited: 10
     };
   }
   render() {
@@ -30,7 +32,7 @@ class ArticleList extends Component {
         title="文章列表"
         bordered={false}
         style={{ width: '100%', height: '100%' }}
-        extra={<Button>导出Excel</Button>}
+        extra={<Button onClick={this.toExcel}>导出Excel</Button>}
         style={{
           overflow: 'auto'
         }}
@@ -41,15 +43,24 @@ class ArticleList extends Component {
           columns={this.state.columns}
           dataSource={this.state.dataSource}
           pagination={{
+            current:this.state.offset / this.state.limited + 1,
             total: this.state.total,
-            hideOnSinglePage: true
+            hideOnSinglePage: true,
+            showQuickJumper: true,
+            onChange: this.onPageChange,
+            onShowSizeChange: this.onShowSizeChange,
+            pageSizeOptions:['10','15','20','25','30']
           }}
         />
       </Card>
     );
   }
-  createColumns = (columnKeys) => {
 
+  toExcel = () => {
+    //在实际的项目中 这个功能是前端发送一个ajax请求到后端，然后后端发送一个文件下载的地址
+  }
+
+  createColumns = (columnKeys) => {
     const columns = columnKeys.map(item => {
       if (item === 'amount') {
         return {
@@ -89,9 +100,10 @@ class ArticleList extends Component {
     })
     return columns;
   }
+
   getData = () => {
-    this.setState({ isLoading:true  });
-    getArticles().then(resp => {
+    this.setState({ isLoading: true });
+    getArticles(this.state.offset, this.state.limited).then(resp => {
       const columnKeys = Object.keys(resp.list[0])
       const columns = this.createColumns(columnKeys);
       console.log(columns)
@@ -102,15 +114,33 @@ class ArticleList extends Component {
       });
       //console.log(this.state.total)
     })
-    .catch(err => {
+      .catch(err => {
 
-    })
-    .finally(() => {
-      this.setState({ isLoading:false  });
-    })
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      })
   }
+
   componentDidMount() {
     this.getData();
+  }
+
+  onPageChange = (page, pageSize) => {
+    // console.log(page,pageSize)
+    this.setState({
+      offset: (page - 1) * pageSize,
+      limited: pageSize
+    }, this.getData());
+  }
+
+  onShowSizeChange = (current, size) => {
+    this.setState({
+      offset: 0,
+      limited: size
+    },() => {
+      this.getData()
+    });
   }
 }
 
