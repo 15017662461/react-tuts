@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button, Table, Tag, } from 'antd';
 import moment from 'moment/moment';
 import { getArticles } from './../../requests'
+import XLSX from 'xlsx';
 
 const titleDisplayMap = {
   id: 'id',
@@ -58,6 +59,22 @@ class ArticleList extends Component {
 
   toExcel = () => {
     //在实际的项目中 这个功能是前端发送一个ajax请求到后端，然后后端发送一个文件下载的地址
+    const data = [Object.keys(this.state.dataSource[0])];
+    for (let i = 0;i < this.state.dataSource.length;i ++){
+      data.push([
+        this.state.dataSource[i].id,
+        this.state.dataSource[i].title,
+        this.state.dataSource[i].author,
+        this.state.dataSource[i].amount,
+        moment(this.state.dataSource[i].createAt).format('YYYY年MM月DD日 hh:mm:ss')
+      ])
+      
+    }
+    const ws = XLSX.utils.aoa_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		/* generate XLSX file and send to client */
+		XLSX.writeFile(wb, `sheetjs${moment().format('YYYYMMDD')}.xlsx`)
   }
 
   createColumns = (columnKeys) => {
