@@ -49,13 +49,14 @@ class Frame extends Component {
 
             </Menu>
           </Sider>
-          <Layout style={{ padding: '0 24px 24px' }}>
+          <Layout style={{ padding: '0 5px 5px',height:'500px' }}>
             <Content
               className="site-layout-background"
               style={{
                 padding: 24,
                 margin: 0,
                 minHeight: 400,
+                overflow:'auto'
               }}
             >
               {this.props.children}
