@@ -32,12 +32,12 @@ class Frame extends Component {
               defaultOpenKeys={['sub1']}
               style={{ height: '100%', borderRight: 0 }}
               onClick={this.onMenuClick}
-            >
+            >1
               {
                 this.props.menus.map(item => {
                   return (
                     <Menu.Item
-                      icon={item.icon ? item.icon  : null}
+                      icon={item.icon ? item.icon : null}
                       key={item.pathname}
                       style={{height:'60px',lineHeight:'60px'}}
                     >

@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
-import { Card, Button, Table, Tag, } from 'antd';
+import {
+  Card,
+  Button,
+  Table,
+  Tag,
+  Modal,
+  Typography,
+  message,
+} from 'antd';
 import moment from 'moment/moment';
-import { getArticles } from './../../requests'
+import { getArticles, deleteArticleById } from './../../requests'
 import XLSX from 'xlsx';
 
 const titleDisplayMap = {
@@ -24,7 +32,11 @@ class ArticleList extends Component {
       total: 0,
       isLoading: false,
       offset: 0,
-      limited: 10
+      limited: 10,
+      deleteArticleModalTitle: " ",
+      isShowModal: false,
+      deleteArticleConfirmLoading:false,
+      deleteId:null
     };
   }
   render() {
@@ -44,15 +56,24 @@ class ArticleList extends Component {
           columns={this.state.columns}
           dataSource={this.state.dataSource}
           pagination={{
-            current:this.state.offset / this.state.limited + 1,
+            current: this.state.offset / this.state.limited + 1,
             total: this.state.total,
             hideOnSinglePage: true,
             showQuickJumper: true,
             onChange: this.onPageChange,
             onShowSizeChange: this.onShowSizeChange,
-            pageSizeOptions:['10','15','20','25','30']
+            pageSizeOptions: ['10', '15', '20', '25', '30']
           }}
         />
+        <Modal
+          title="此操作不可逆，请谨慎选择！"
+          visible={this.state.isShowModal}
+          onCancel={this.hideDeleteModal}
+          confirmLoading={this.state.deleteArticleConfirmLoading}
+          onOk = {this.deleteArticle}
+          >
+          {<Typography>确定要删除<span style={{ color: '#f00' }}>{this.state.deleteArticleModalTitle}</span>吗？</Typography>}
+        </Modal>
       </Card>
     );
   }
@@ -60,7 +81,7 @@ class ArticleList extends Component {
   toExcel = () => {
     //在实际的项目中 这个功能是前端发送一个ajax请求到后端，然后后端发送一个文件下载的地址
     const data = [Object.keys(this.state.dataSource[0])];
-    for (let i = 0;i < this.state.dataSource.length;i ++){
+    for (let i = 0; i < this.state.dataSource.length; i++) {
       data.push([
         this.state.dataSource[i].id,
         this.state.dataSource[i].title,
@@ -68,13 +89,13 @@ class ArticleList extends Component {
         this.state.dataSource[i].amount,
         moment(this.state.dataSource[i].createAt).format('YYYY年MM月DD日 hh:mm:ss')
       ])
-      
+
     }
     const ws = XLSX.utils.aoa_to_sheet(data);
-		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
-		/* generate XLSX file and send to client */
-		XLSX.writeFile(wb, `sheetjs${moment().format('YYYYMMDD')}.xlsx`)
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+    /* generate XLSX file and send to client */
+    XLSX.writeFile(wb, `sheetjs${moment().format('YYYYMMDD')}.xlsx`)
   }
 
   createColumns = (columnKeys) => {
@@ -108,10 +129,10 @@ class ArticleList extends Component {
     columns.push({
       title: '操作',
       key: 'action',
-      render: () => {
+      render: (text, record) => {
         return <ButtonGroup>
           <Button size="small" type="primary">编辑</Button>
-          <Button size="small" type="danger">删除</Button>
+          <Button size="small" type="danger" onClick={this.showDeleteArticleModal.bind(this, record)}>删除</Button>
         </ButtonGroup>
       }
     })
@@ -123,7 +144,7 @@ class ArticleList extends Component {
     getArticles(this.state.offset, this.state.limited).then(resp => {
       const columnKeys = Object.keys(resp.list[0])
       const columns = this.createColumns(columnKeys);
-      console.log(columns)
+      // console.log(columns)
       this.setState({
         total: resp.total,
         columns,
@@ -155,9 +176,53 @@ class ArticleList extends Component {
     this.setState({
       offset: 0,
       limited: size
-    },() => {
-      this.getData()
+    }, this.getData());
+  }
+
+  showDeleteArticleModal = (record) => {
+    // console.log(id,this)
+    // Modal.confirm({
+    //   content:<Typography>确定要删除<span style={{color:'#f00'}}>{record.title}</span>吗？</Typography>,
+    //   title:'此操作不可逆，请谨慎选择！',
+    //   okText:'别墨迹，赶紧删除！',
+    //   cancelText:'我点错了！',
+    //   onOk(){
+    //     deleteArticle(record.id).then(resp => {
+    //       console.log(resp)
+    //     })
+    //   }
+    // })
+    this.setState({
+      isShowModal: true,
+      deleteArticleModalTitle: record.title,
+      deleteId:record.id
     });
+  }
+
+  hideDeleteModal = () => {
+    this.setState({
+      isShowModal: false,
+      deleteArticleModalTitle: ''
+    });
+  }
+
+  deleteArticle = () => {
+    // console.log(this.state.deleteId)
+    this.setState({ deleteArticleConfirmLoading:true });
+    deleteArticleById(this.state.deleteId)
+    .then(resp => {
+      // console.log(resp)
+      this.setState({ offset:0  },this.getData());
+    }).catch(err => {
+      console.log(err)
+    })
+    .finally(() => {
+      this.setState({ 
+        deleteArticleConfirmLoading:false,
+        isShowModal:false
+      });
+      message.success('成功删除了一篇文章')
+    })
   }
 }
 
