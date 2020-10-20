@@ -7,6 +7,7 @@ import {
   Modal,
   Typography,
   message,
+  Tooltip,
 } from 'antd';
 import moment from 'moment/moment';
 import { getArticles, deleteArticleById } from './../../requests'
@@ -35,8 +36,8 @@ class ArticleList extends Component {
       limited: 10,
       deleteArticleModalTitle: " ",
       isShowModal: false,
-      deleteArticleConfirmLoading:false,
-      deleteId:null
+      deleteArticleConfirmLoading: false,
+      deleteId: null
     };
   }
   render() {
@@ -70,8 +71,8 @@ class ArticleList extends Component {
           visible={this.state.isShowModal}
           onCancel={this.hideDeleteModal}
           confirmLoading={this.state.deleteArticleConfirmLoading}
-          onOk = {this.deleteArticle}
-          >
+          onOk={this.deleteArticle}
+        >
           {<Typography>确定要删除<span style={{ color: '#f00' }}>{this.state.deleteArticleModalTitle}</span>吗？</Typography>}
         </Modal>
       </Card>
@@ -105,7 +106,14 @@ class ArticleList extends Component {
           title: titleDisplayMap[item],
           render: (text, record) => {
             const { amount } = record;
-            return <Tag color={amount > 1000 ? 'red' : 'green'}>{record.amount}</Tag>
+            return (<Tooltip 
+              title={amount > 1000 ? '热门' : '新兴'} 
+              color={amount > 1000 ? 'red' : 'cyan'}
+              overlayStyle={{fontSize:'13px'}}
+              placement="right"
+              >
+              <Tag color={amount > 1000 ? 'red' : 'cyan'}>{record.amount}</Tag>
+            </Tooltip>)
           },
           key: item
         }
@@ -131,7 +139,7 @@ class ArticleList extends Component {
       key: 'action',
       render: (text, record) => {
         return <ButtonGroup>
-          <Button size="small" type="primary">编辑</Button>
+          <Button size="small" type="primary" onClick={this.toEdit.bind(this,record)}>编辑</Button>
           <Button size="small" type="danger" onClick={this.showDeleteArticleModal.bind(this, record)}>删除</Button>
         </ButtonGroup>
       }
@@ -195,7 +203,7 @@ class ArticleList extends Component {
     this.setState({
       isShowModal: true,
       deleteArticleModalTitle: record.title,
-      deleteId:record.id
+      deleteId: record.id
     });
   }
 
@@ -208,21 +216,25 @@ class ArticleList extends Component {
 
   deleteArticle = () => {
     // console.log(this.state.deleteId)
-    this.setState({ deleteArticleConfirmLoading:true });
+    this.setState({ deleteArticleConfirmLoading: true });
     deleteArticleById(this.state.deleteId)
-    .then(resp => {
-      // console.log(resp)
-      this.setState({ offset:0  },this.getData());
-    }).catch(err => {
-      console.log(err)
-    })
-    .finally(() => {
-      this.setState({ 
-        deleteArticleConfirmLoading:false,
-        isShowModal:false
-      });
-      message.success('成功删除了一篇文章')
-    })
+      .then(resp => {
+        // console.log(resp)
+        this.setState({ offset: 0 }, this.getData());
+      }).catch(err => {
+        console.log(err)
+      })
+      .finally(() => {
+        this.setState({
+          deleteArticleConfirmLoading: false,
+          isShowModal: false
+        });
+        message.success('成功删除了一篇文章')
+      })
+  }
+
+  toEdit = (record) => {
+    this.props.history.push(`/admin/article/edit/${record.id}`)
   }
 }
 

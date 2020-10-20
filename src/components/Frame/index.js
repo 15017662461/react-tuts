@@ -17,6 +17,9 @@ class Frame extends Component {
     menus: PropTypes.array.isRequired
   }
   render() {
+    const selectedKeyArr = this.props.location.pathname.split('/');
+    selectedKeyArr.length = 3;
+    // console.log(selectedKeyArr);
     return (
       <Layout>
         <Header className="header qf-header" >
@@ -28,11 +31,10 @@ class Frame extends Component {
           <Sider width={250} className="site-layout-background">
             <Menu
               mode="inline"
-              defaultSelectedKeys={this.props.location.pathname}
-              defaultOpenKeys={['sub1']}
+              selectedKeys={[selectedKeyArr.join('/')]}
               style={{ height: '100%', borderRight: 0 }}
               onClick={this.onMenuClick}
-            >1
+            >
               {
                 this.props.menus.map(item => {
                   return (
