@@ -49,3 +49,9 @@ export const getArticleAmount = () => {
   return service.post(`/api/v1/articleAmount`);
 }
 
+//表盘信息，获取网站新增数据
+export const getMainAmount = () => {
+  return service.post(`/api/v1/mainAmount`);
+}
+
+

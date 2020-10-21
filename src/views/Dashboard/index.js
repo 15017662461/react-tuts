@@ -7,7 +7,7 @@ import {
 } from 'antd'
 import './dashboard.less'
 import echarts from 'echarts';
-import { getArticleAmount } from './../../requests'
+import { getArticleAmount, getMainAmount } from './../../requests'
 
 
 class Dashboard extends Component {
@@ -17,7 +17,9 @@ class Dashboard extends Component {
     this.state = {
       options: null,
       articleChart: null,
-      isLoading:true,
+      isCartLoading: true,
+      isTopLoading: true,
+      mainAmount: []
     }
   }
   render() {
@@ -27,31 +29,33 @@ class Dashboard extends Component {
           title="概览"
           bordered={false}
         >
-          <Row gutter={16}>
-            <Col className="gutter-row" span={6}>
-              <div className="qf-gutter-box" style={{ backgroundColor: '#2986f6' }}>
-                col-6
-              </div>
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <div className="qf-gutter-box" style={{ backgroundColor: '#aba47b' }}>
-                col-6
-              </div>
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <div className="qf-gutter-box" style={{ backgroundColor: '#ff7043' }}>
-                col-6
-              </div>
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <div className="qf-gutter-box" style={{ backgroundColor: '#43a067' }}>
-                col-6
-              </div>
-            </Col>
-          </Row>
+          <Spin spinning={this.state.isTopLoading}>
+            <Row gutter={16}>
+              {/* <Col className="gutter-row" span={6}>
+        //   <div className="qf-gutter-box" style={{ backgroundColor: '#2986f6' }}>
+        //     col-6
+        //   </div>
+            </Col>*/}
+              {
+                this.state.mainAmount.map((item, index) => {
+                  return (
+                    <Col className="gutter-row" span={8} key={item.title}>
+                      <div className="qf-gutter-box" style={this.radomColor(index)}>
+                        <Row>
+                          <Col className="db-title" span={6} order={2}>{item.title}</Col>
+                          <Col className="db-amount" span={18} order={1}>{item.amount}</Col>
+                        </Row>
+                      </div>
+                    </Col>
+                  )
+                })
+              }
+            </Row>
+          </Spin>
+
         </Card>
         <Card title="最近浏览量" bordered={false}>
-          <Spin spinning={this.state.isLoading}>
+          <Spin spinning={this.state.isCartLoading}>
             <div ref={this.articleAmount} style={{ height: '400px' }}>
 
             </div>
@@ -62,10 +66,27 @@ class Dashboard extends Component {
     );
   }
   componentDidMount() {
+    this.getTopData();
     const articleChart = echarts.init(this.articleAmount.current)
     this.setState({ articleChart });
     this.initArticleChart()
   }
+
+  radomColor(index) {
+    const colorArr = ['#2986f6', '#ff7043', '#43a067']
+    return { backgroundColor: colorArr[index] }
+  }
+
+  getTopData = () => {
+    getMainAmount()
+      .then(resp => {
+        this.setState({ mainAmount: resp.list });
+      })
+      .finally(() => {
+        this.setState({ isTopLoading: false });
+      })
+  }
+
   initArticleChart = () => {
     getArticleAmount()
       .then(resp => {
@@ -89,9 +110,8 @@ class Dashboard extends Component {
       })
       .finally(() => {
         this.state.articleChart.setOption(this.state.options)
-        this.setState({ isLoading:false });
+        this.setState({ isCartLoading: false });
       })
-
   }
 }
 

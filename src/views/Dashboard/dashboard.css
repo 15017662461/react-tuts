@@ -5,3 +5,11 @@
   color: #fff;
   border-radius: 6px;
 }
+.qf-gutter-box .db-title {
+  position: relative;
+  top: 15px;
+  font-size: 12px;
+}
+.qf-gutter-box .db-amount {
+  font-size: 45px;
+}
