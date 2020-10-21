@@ -45,11 +45,8 @@ class ArticleList extends Component {
       <Card
         title="文章列表"
         bordered={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%',overflow: 'auto' }}
         extra={<Button onClick={this.toExcel}>导出Excel</Button>}
-        style={{
-          overflow: 'auto'
-        }}
       >
         <Table
           loading={this.state.isLoading}

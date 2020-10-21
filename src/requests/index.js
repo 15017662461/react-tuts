@@ -29,7 +29,17 @@ export const getArticles = () => {
   return service.post('/api/v1/articleList');
 }
 
-//通过删除文章
+//通过id删除文章
 export const deleteArticleById = (id) => {
   return service.post(`/api/v1/articleDelete/${id}`);
+}
+
+//通过id获取文章详细信息
+export const getArticleById = (id) => {
+  return service.post(`/api/v1/article/${id}`);
+}
+
+//保存文章
+export const saveArticle = (id,data) => {
+  return service.post(`/api/v1/articleEdit/${id}`,data);
 }
