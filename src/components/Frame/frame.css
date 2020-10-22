@@ -2,9 +2,11 @@
   padding: 0 16px !important;
   background-color: #fff !important;
   border-bottom: 1px solid #dedede;
+  display: flex;
 }
 .qf-header .qf-logo {
   height: 48px;
+  flex: 1;
 }
 .qf-header .qf-logo img {
   max-height: 100%;

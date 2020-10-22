@@ -4,12 +4,14 @@ import {
   Row,
   Col,
   Spin,
+  message,
 } from 'antd'
 import './dashboard.less'
 import echarts from 'echarts';
+import {withRouter} from 'react-router-dom'
 import { getArticleAmount, getMainAmount } from './../../requests'
 
-
+@withRouter
 class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -108,9 +110,13 @@ class Dashboard extends Component {
         };
         this.setState({ options });
       })
+      .catch(err => {
+        // alert(err);
+        message.error('网络错误！')
+      })
       .finally(() => {
-        this.state.articleChart.setOption(this.state.options)
-        this.setState({ isCartLoading: false });
+        window.navigator.onLine && this.state.articleChart.setOption(this.state.options)
+        window.navigator.onLine && this.setState({ isCartLoading: false });
       })
   }
 }

@@ -5,7 +5,8 @@ import {
   NotFound,
   Settings,
   ArticleList,
-  ArticleEdit
+  ArticleEdit,
+  Notifications
 } from './../views'
 
 import {DashboardOutlined ,UnorderedListOutlined, SettingOutlined } from '@ant-design/icons';
@@ -44,5 +45,9 @@ export const adminRoutes = [
     title: '设置',
     isNav: true,
     icon:<SettingOutlined />,
+  },
+  {
+    pathname: '/admin/notifications',
+    component: Notifications,
   }
 ]
