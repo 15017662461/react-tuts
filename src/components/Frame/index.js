@@ -5,6 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import { getNotificationList } from './../../actions/notifications'
+import {logout} from './../../actions/user'
 // eslint-disable-next-line
 import logo from './logo.png'
 import './frame.less'
@@ -12,8 +13,11 @@ import './frame.less'
 const { Header, Content, Sider } = Layout;
 
 const mapState = (state) =>{
+  console.log(state)
   return {
-    notificationsCount:state.notifications.lists.filter(item => item.hasRead===false).length
+    notificationsCount:state.notifications.lists.filter(item => item.hasRead===false).length,
+    displayName:state.user.displayName,
+    avatar:state.user.avatar
   }
 }
 
@@ -21,6 +25,10 @@ const mapDispatch = (dispatch) => {
   return {
     getNotificationList(){
       const action = getNotificationList();
+      dispatch(action);
+    },
+    logout(){
+      const action = logout();
       dispatch(action);
     }
   }
@@ -34,6 +42,7 @@ class Frame extends Component {
     menus: PropTypes.array.isRequired
   }
   render() {
+    console.log(this.props)
     // console.log(this.props)
     const selectedKeyArr = this.props.location.pathname.split('/');
     selectedKeyArr.length = 3;
@@ -47,7 +56,7 @@ class Frame extends Component {
         <Menu.Item key="/admin/settings">
           个人设置
         </Menu.Item>
-        <Menu.Item key="/login">
+        <Menu.Item key="/logout">
           退出登录
         </Menu.Item>
       </Menu>
@@ -61,8 +70,8 @@ class Frame extends Component {
           <Dropdown overlay={menu}>
 
             <div onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center',cursor:'pointer' }}>
-              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              <span>欢迎您！翊子哥</span>
+              <Avatar src={this.props.avatar} />
+              <span>欢迎您！{this.props.displayName}</span>
               <Badge count={this.props.notificationsCount} offset={[-10, -10]}>
                 <DownOutlined />
               </Badge>
@@ -123,7 +132,12 @@ class Frame extends Component {
 
   onDropDownMenuClick = ({key}) => {
     // console.log(key)
-    this.props.history.push(key)
+    if(key === '/logout'){
+      this.props.logout();
+    }else{
+      this.props.history.push(key)
+    }
+    
   }
 }
 
