@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Card, Button,List, Avatar,Badge } from 'antd';
-import {connect} from 'react-redux'; 
-import {markNotificationsAsReadById,markAllNotificationsAsRead} from './../../actions/notifications'
+import { Card, Button, List, Avatar, Badge, Spin } from 'antd';
+import { connect } from 'react-redux';
+import { markNotificationsAsReadById, markAllNotificationsAsRead } from './../../actions/notifications'
 
-const mapState = (state) =>{
+const mapState = (state) => {
   // const {
   //   list
   // } = state.notifications
@@ -15,45 +15,51 @@ const mapState = (state) =>{
 
 const mapDispatch = (dispatch) => {
   return {
-    markNotificationsAsReadById(id){
+    markNotificationsAsReadById(id) {
       const action = markNotificationsAsReadById(id);
       dispatch(action)
     },
-    markAllNotificationsAsRead(){
+    markAllNotificationsAsRead() {
       const action = markAllNotificationsAsRead();
       dispatch(action)
     }
   }
 }
 
-@connect(mapState,mapDispatch)
+@connect(mapState, mapDispatch)
 class Notifications extends Component {
-  
+
   render() {
-    console.log(this.props.lists);
+    console.log(this.props);
     return (
       <>
-        <Card title="通知中心" bordered={false} extra={<Button 
-          disabled={this.props.lists.every(item => item.hasRead === true)}>全部标记为已读</Button>}
-          onClick={this.props.markAllNotificationsAsRead.bind(this)}
+        <Spin spinning={this.props.isLoading}>
+          <Card title="通知中心" bordered={false} extra={
+            <Button
+            disabled={this.props.lists.every(item => item.hasRead === true)}
+            onClick={this.props.markAllNotificationsAsRead.bind(this)}
+            >
+            全部标记为已读
+            </Button>}
           >
-          <List
-            itemLayout="horizontal"
-            dataSource={this.props.lists}
-            renderItem={item => (
-              <List.Item 
-                extra={item.hasRead ? null : <Button 
-                  onClick={this.props.markNotificationsAsReadById.bind(this,item.id)}>标记为已读
-                  </Button>}
-              >
-                <List.Item.Meta
-                  title={<Badge dot={!item.hasRead}>{item.title}</Badge>}
-                  description={item.desc}
-                />
-              </List.Item>
-            )}
-          />
-        </Card>
+            <List
+              itemLayout="horizontal"
+              dataSource={this.props.lists}
+              renderItem={item => (
+                <List.Item
+                  extra={item.hasRead ? null : <Button
+                    onClick={this.props.markNotificationsAsReadById.bind(this, item.id)}>标记为已读
+                </Button>}
+                >
+                  <List.Item.Meta
+                    title={<Badge dot={!item.hasRead}>{item.title}</Badge>}
+                    description={item.desc}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+        </Spin>
       </>
     );
   }

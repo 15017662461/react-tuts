@@ -54,4 +54,14 @@ export const getMainAmount = () => {
   return service.post(`/api/v1/mainAmount`);
 }
 
+//获取通知列表
+export const getNotifications = () => {
+  return service.post(`/api/v1/notifications`);
+}
+
+//登录
+export const login = () => {
+  return service.post(`/api/v1/login`);
+}
+
 

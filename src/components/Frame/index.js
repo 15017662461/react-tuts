@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Layout, Menu, Dropdown, Avatar, Badge } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import { getNotificationList } from './../../actions/notifications'
 // eslint-disable-next-line
-import {connect} from 'react-redux'
 import logo from './logo.png'
 import './frame.less'
 // eslint-disable-next-line
@@ -16,8 +17,17 @@ const mapState = (state) =>{
   }
 }
 
+const mapDispatch = (dispatch) => {
+  return {
+    getNotificationList(){
+      const action = getNotificationList();
+      dispatch(action);
+    }
+  }
+}
+
 @withRouter
-@connect(mapState)
+@connect(mapState,mapDispatch)
 class Frame extends Component {
   
   static propTypes = {
@@ -50,7 +60,7 @@ class Frame extends Component {
           </div>
           <Dropdown overlay={menu}>
 
-            <div onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center' }}>
+            <div onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center',cursor:'pointer' }}>
               <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
               <span>欢迎您！翊子哥</span>
               <Badge count={this.props.notificationsCount} offset={[-10, -10]}>
@@ -100,6 +110,10 @@ class Frame extends Component {
         </Layout>
       </Layout>
     );
+  }
+
+  componentDidMount(){
+    this.props.getNotificationList();
   }
 
   onMenuClick = ({ key }) => {
