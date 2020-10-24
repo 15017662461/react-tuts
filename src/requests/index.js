@@ -6,6 +6,11 @@ const service = axios.create({
   timeout:5000
 });
 
+const service1 = axios.create({
+  baseURL:'http://rap2api.taobao.org/app/mock/268434',
+  timeout:5000
+});
+
 service.interceptors.request.use((config) => {
   config.data = Object.assign({},config.data,{
     // authToken:window.localStorage.getItem('authToken')
@@ -20,7 +25,8 @@ service.interceptors.response.use((resp) => {
   }else{
     //处理错误
     //console.log('出错了')
-    message.error(resp.data.data.errMsg);
+    message.error(resp.data.errMsg);
+    return resp.data.errMsg
   }
 })
 
@@ -60,8 +66,8 @@ export const getNotifications = () => {
 }
 
 //登录
-export const login = () => {
-  return service.post(`/api/v1/login`);
+export const loginRequest = (userInfo) => {
+  return service1.post(`/api/v1/login`,userInfo);
 }
 
 
