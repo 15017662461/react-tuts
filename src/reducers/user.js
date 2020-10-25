@@ -23,16 +23,21 @@ export default (state = initState, action) => {
         ...state,
         ...action.payload.userInfo,
         isLoading: false,
-        isLogin:true
+        isLogin: true
       }
     case actionTypes.LOGIN_FAILED:
       return {
-        id:'',
-        displayName:'',
-        avatar:'',
-        isLogin:false,
-        isLoading:false,
-        role:'' 
+        id: '',
+        displayName: '',
+        avatar: '',
+        isLogin: false,
+        isLoading: false,
+        role: ''
+      }
+    case actionTypes.CHANGE_AVATAR:
+      return {
+        ...state,
+        avatar:action.payload.avatarUrl
       }
     default:
       return state

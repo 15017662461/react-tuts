@@ -51,9 +51,18 @@ export const login = (userInfo) => {
       })
   }
 }
-
+//退出登录
 export const logout = () => {
   return (dispatch) => {
     dispatch(loginFailed())
+  }
+}
+
+export const changeAvatar = (avatarUrl) =>{
+  return {
+    type:actionTypes.CHANGE_AVATAR,
+    payload:{
+      avatarUrl
+    }
   }
 }
