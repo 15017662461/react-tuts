@@ -13,7 +13,6 @@ import './frame.less'
 const { Header, Content, Sider } = Layout;
 
 const mapState = (state) =>{
-  console.log(state)
   return {
     notificationsCount:state.notifications.lists.filter(item => item.hasRead===false).length,
     displayName:state.user.displayName,
@@ -42,7 +41,6 @@ class Frame extends Component {
     menus: PropTypes.array.isRequired
   }
   render() {
-    console.log(this.props)
     // console.log(this.props)
     const selectedKeyArr = this.props.location.pathname.split('/');
     selectedKeyArr.length = 3;
