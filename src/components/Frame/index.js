@@ -63,7 +63,7 @@ class Frame extends Component {
       <Layout>
         <Header className="header qf-header" >
           <div className="qf-logo">
-            <img src={logo} alt="" />
+            <img src={logo} alt="" onClick={this.clickImg} style={{cursor:'pointer'}} />
           </div>
           <Dropdown overlay={menu}>
 
@@ -121,6 +121,11 @@ class Frame extends Component {
 
   componentDidMount(){
     this.props.getNotificationList();
+  }
+
+  clickImg = () => {
+    // console.log(this.props)
+    this.props.history.push('/admin')
   }
 
   onMenuClick = ({ key }) => {

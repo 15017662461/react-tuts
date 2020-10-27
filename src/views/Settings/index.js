@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import './settings.less';
 
 import axios from 'axios'
-import { Card, Upload, Spin } from 'antd'
+import { Card, Upload, Spin,Tooltip  } from 'antd'
 
 import {changeAvatar} from '../../actions/user'
 
@@ -29,10 +29,11 @@ class Settings extends Component {
         <Upload className="qf-upload"
           showUploadList={false}
           customRequest={this.handleUploadAvatar}
+          style={{cursor:'pointer'}}
         >
           <Spin spinning={this.state.isUploading}>
             {
-              this.props.avatarUrl ? <img src={this.props.avatarUrl} alt="头像" /> : <span>点击上传</span>
+              this.props.avatarUrl ? <Tooltip title="点击更换头像" placement="bottom"><img src={this.props.avatarUrl} alt="头像" style={{cursor:'pointer'}}/></Tooltip> : <span>点击上传</span>
             }
           </Spin>
         </Upload>
